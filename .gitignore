@@ -1,2 +1,19 @@
-node_modules
-dist
+# dependencies
+node_modules/
+
+# build files
+dist/
+
+# logs
+*.log
+
+# environment files
+.env
+.env.local
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# VS Code settings
+.vscode/
