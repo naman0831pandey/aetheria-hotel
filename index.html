@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aetheria | Premium Hotel Management System</title>
+  <!-- Google Fonts: Outfit for headings, Inter for body -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Core Stylesheet -->
+  <link rel="stylesheet" href="/src/style.css">
+</head>
+<body class="dark-theme">
+  <div class="app-container">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="logo-icon">
+          <i data-lucide="hotel" class="gradient-icon"></i>
+        </div>
+        <div class="brand-text">
+          <h1>AETHERIA</h1>
+          <span>Luxury Resort & Spa</span>
+        </div>
+      </div>
+
+      <nav class="nav-menu">
+        <button class="nav-item active" data-tab="dashboard">
+          <i data-lucide="layout-dashboard"></i>
+          <span>Dashboard</span>
+        </button>
+        <button class="nav-item" data-tab="bookings">
+          <i data-lucide="key-round"></i>
+          <span>Bookings & Rooms</span>
+        </button>
+        <button class="nav-item" data-tab="restaurant">
+          <i data-lucide="utensils-crossact"></i>
+          <span>Dining & Orders</span>
+        </button>
+        <button class="nav-item" data-tab="laundry">
+          <i data-lucide="shirt"></i>
+          <span>Laundry Service</span>
+        </button>
+        <button class="nav-item" data-tab="billing">
+          <i data-lucide="receipt"></i>
+          <span>Billing & Checkout</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button id="reset-db-btn" class="btn btn-secondary btn-sm block">
+          <i data-lucide="rotate-ccw"></i>
+          <span>Reset Database</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Top Header -->
+      <header class="top-header">
+        <div class="header-title">
+          <h2 id="page-title">Executive Dashboard</h2>
+          <p id="page-subtitle">Welcome back. Here is the operational overview of your property today.</p>
+        </div>
+        <div class="header-actions">
+          <div class="live-clock">
+            <i data-lucide="clock"></i>
+            <span id="current-time">Loading time...</span>
+          </div>
+          <div class="user-profile">
+            <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=Naman" alt="Staff Avatar" class="avatar">
+            <div class="user-info">
+              <span class="user-name">Naman</span>
+              <span class="user-role">Front Desk Manager</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Viewport for dynamic tabs -->
+      <div class="tab-content-container">
+
+        <!-- Tab 1: Dashboard -->
+        <section id="dashboard" class="tab-panel active">
+          <!-- Stats Cards Grid -->
+          <div class="stats-grid">
+            <div class="stat-card glass-panel">
+              <div class="stat-header">
+                <span class="stat-title">Room Occupancy</span>
+                <div class="stat-icon-wrapper purple-glow">
+                  <i data-lucide="bed-double" class="purple-text"></i>
+                </div>
+              </div>
+              <div class="stat-value" id="stat-occupancy">0%</div>
+              <div class="stat-progress-bar">
+                <div class="stat-progress-fill purple-fill" id="occupancy-fill" style="width: 0%;"></div>
+              </div>
+              <span class="stat-footer-text" id="stat-rooms-count">0 of 0 Rooms Booked</span>
+            </div>
+
+            <div class="stat-card glass-panel">
+              <div class="stat-header">
+                <span class="stat-title">Total Estimated Revenue</span>
+                <div class="stat-icon-wrapper green-glow">
+                  <i data-lucide="indian-rupee" class="green-text"></i>
+                </div>
+              </div>
+              <div class="stat-value" id="stat-revenue">₹0</div>
+              <div class="stat-progress-bar">
+                <div class="stat-progress-fill green-fill" style="width: 100%;"></div>
+              </div>
+              <span class="stat-footer-text" id="stat-revenue-breakdown">Includes rooms + dining + laundry</span>
+            </div>
+
+            <div class="stat-card glass-panel">
+              <div class="stat-header">
+                <span class="stat-title">Active Guests</span>
+                <div class="stat-icon-wrapper blue-glow">
+                  <i data-lucide="users" class="blue-text"></i>
+                </div>
+              </div>
+              <div class="stat-value" id="stat-guests">0</div>
+              <div class="stat-progress-bar">
+                <div class="stat-progress-fill blue-fill" style="width: 100%;"></div>
+              </div>
+              <span class="stat-footer-text">Currently checked-in guests</span>
+            </div>
+
+            <div class="stat-card glass-panel">
+              <div class="stat-header">
+                <span class="stat-title">Restaurant Orders</span>
+                <div class="stat-icon-wrapper orange-glow">
+                  <i data-lucide="shopping-bag" class="orange-text"></i>
+                </div>
+              </div>
+              <div class="stat-value" id="stat-orders">0</div>
+              <div class="stat-progress-bar">
+                <div class="stat-progress-fill orange-fill" style="width: 100%;"></div>
+              </div>
+              <span class="stat-footer-text" id="stat-orders-today">Total orders processed</span>
+            </div>
+          </div>
+
+          <!-- Room Status Grid Summary & Operations -->
+          <div class="dashboard-details-grid">
+            <div class="details-card glass-panel span-2">
+              <div class="details-header">
+                <h3>Quick Room Overview</h3>
+                <span class="badge badge-purple" id="room-overview-badge">9 Rooms Total</span>
+              </div>
+              <div class="rooms-status-strip" id="rooms-strip-container">
+                <!-- Javascript will populate room blocks -->
+              </div>
+              <div class="legend-row">
+                <div class="legend-item"><span class="legend-dot available"></span> Available</div>
+                <div class="legend-item"><span class="legend-dot occupied"></span> Occupied</div>
+              </div>
+            </div>
+
+            <div class="details-card glass-panel">
+              <h3>Recent Guest Activity</h3>
+              <div class="activity-log-list" id="activity-log">
+                <!-- Javascript will populate logs -->
+                <div class="empty-state">No recent activity.</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Tab 2: Bookings & Rooms -->
+        <section id="bookings" class="tab-panel">
+          <div class="view-split-layout">
+            <!-- Left Side: Registration Form -->
+            <div class="form-container glass-panel">
+              <div class="panel-header">
+                <i data-lucide="user-plus"></i>
+                <h3>Guest Check-In</h3>
+              </div>
+              
+              <form id="checkin-form" class="app-form">
+                <div class="form-group">
+                  <label for="guest-name">Guest Full Name</label>
+                  <div class="input-wrapper">
+                    <i data-lucide="user"></i>
+                    <input type="text" id="guest-name" placeholder="Enter name" required>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="guest-address">Home Address</label>
+                  <div class="input-wrapper">
+                    <i data-lucide="map-pin"></i>
+                    <input type="text" id="guest-address" placeholder="Enter address" required>
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="check-in-date">Check-In Date</label>
+                    <div class="input-wrapper">
+                      <i data-lucide="calendar"></i>
+                      <input type="date" id="check-in-date" required>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="check-out-date">Check-Out Date</label>
+                    <div class="input-wrapper">
+                      <i data-lucide="calendar"></i>
+                      <input type="date" id="check-out-date" required>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="room-type-select">Room Category</label>
+                    <div class="input-wrapper">
+                      <i data-lucide="layers"></i>
+                      <select id="room-type-select" required>
+                        <option value="">Select Category</option>
+                        <option value="A">Type A (Rs 1,000 / Night)</option>
+                        <option value="B">Type B (Rs 2,000 / Night)</option>
+                        <option value="C">Type C (Rs 3,000 / Night)</option>
+                        <option value="D">Type D (Rs 4,000 / Night)</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="room-number-select">Room Allocation</label>
+                    <div class="input-wrapper">
+                      <i data-lucide="door-closed"></i>
+                      <select id="room-number-select" required disabled>
+                        <option value="">Choose category first</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block">
+                  <i data-lucide="check-circle-2"></i>
+                  <span>Complete Registration & Check-In</span>
+                </button>
+              </form>
+            </div>
+
+            <!-- Right Side: Rooms Grid & Status -->
+            <div class="table-container glass-panel">
+              <div class="panel-header">
+                <i data-lucide="door-closed"></i>
+                <h3>All Rooms Directory</h3>
+              </div>
+              <div class="rooms-grid-layout" id="rooms-grid">
+                <!-- Javascript will populate room cards -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Active Bookings List -->
+          <div class="list-section-container glass-panel">
+            <div class="section-header-row">
+              <h3>Currently Checked-In Guests</h3>
+              <div class="search-bar">
+                <i data-lucide="search"></i>
+                <input type="text" id="guest-search-input" placeholder="Search guests by name or room...">
+              </div>
+            </div>
+            <div class="table-wrapper">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Guest Details</th>
+                    <th>Room Assigned</th>
+                    <th>Address</th>
+                    <th>Dates (In &rarr; Out)</th>
+                    <th>Nights</th>
+                    <th>Est. Rent</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="guests-list-tbody">
+                  <!-- Javascript will populate guest rows -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- Tab 3: Dining & Orders -->
+        <section id="restaurant" class="tab-panel">
+          <div class="dining-dashboard">
+            <!-- Left Side: Order Form & Cart -->
+            <div class="cart-container glass-panel">
+              <div class="panel-header">
+                <i data-lucide="shopping-cart"></i>
+                <h3>Room Service Order</h3>
+              </div>
+              
+              <div class="guest-selector-group">
+                <label for="restaurant-guest-select">Select Active Room</label>
+                <div class="input-wrapper">
+                  <i data-lucide="user"></i>
+                  <select id="restaurant-guest-select" required>
+                    <option value="">-- Choose Checked-In Room --</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Cart Summary -->
+              <div class="cart-summary-box">
+                <h4>Cart Items</h4>
+                <div class="cart-items-list" id="cart-items">
+                  <div class="empty-cart-message">
+                    <i data-lucide="utensils"></i>
+                    <p>Select items from the menu to add to cart.</p>
+                  </div>
+                </div>
+                <div class="cart-total-row">
+                  <span>Subtotal Amount:</span>
+                  <span id="cart-total-price">₹0</span>
+                </div>
+                <button id="place-order-btn" class="btn btn-primary btn-block" disabled>
+                  <i data-lucide="send"></i>
+                  <span>Send Order to Room</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Right Side: Restaurant Menu Grid -->
+            <div class="menu-container glass-panel">
+              <div class="menu-header-row">
+                <div class="title-info">
+                  <h3>In-Room Dining Menu</h3>
+                  <p>Delectable food items and beverages delivered fresh to the room.</p>
+                </div>
+                <!-- Menu Filter Category Tabs -->
+                <div class="menu-categories" id="menu-categories-container">
+                  <button class="cat-btn active" data-category="all">All</button>
+                  <button class="cat-btn" data-category="Beverage">Beverages</button>
+                  <button class="cat-btn" data-category="Snack">Snacks</button>
+                  <button class="cat-btn" data-category="Main Course">Mains</button>
+                </div>
+              </div>
+              <div class="menu-items-grid" id="menu-items-grid">
+                <!-- Javascript will populate menu cards -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Restaurant Order History -->
+          <div class="list-section-container glass-panel margin-top">
+            <div class="panel-header">
+              <i data-lucide="history"></i>
+              <h3>Recent In-Room Dining Orders</h3>
+            </div>
+            <div class="table-wrapper">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Order ID</th>
+                    <th>Room No.</th>
+                    <th>Guest Name</th>
+                    <th>Ordered Item</th>
+                    <th>Quantity</th>
+                    <th>Unit Price</th>
+                    <th>Total Charge</th>
+                    <th>Time Placed</th>
+                  </tr>
+                </thead>
+                <tbody id="orders-list-tbody">
+                  <!-- Javascript will populate order rows -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- Tab 4: Laundry Service -->
+        <section id="laundry" class="tab-panel">
+          <div class="view-split-layout">
+            <!-- Left Side: Laundry Submission Form -->
+            <div class="form-container glass-panel">
+              <div class="panel-header">
+                <i data-lucide="washing-machine"></i>
+                <h3>Laundry Request</h3>
+              </div>
+              
+              <form id="laundry-form" class="app-form">
+                <div class="form-group">
+                  <label for="laundry-guest-select">Select Active Room</label>
+                  <div class="input-wrapper">
+                    <i data-lucide="user"></i>
+                    <select id="laundry-guest-select" required>
+                      <option value="">-- Choose Checked-In Room --</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="laundry-service-select">Laundry Service Type</label>
+                  <div class="input-wrapper">
+                    <i data-lucide="shield-check"></i>
+                    <select id="laundry-service-select" required>
+                      <!-- Loaded via JS -->
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="clothes-count">Number of Clothes</label>
+                  <div class="input-wrapper">
+                    <i data-lucide="hash"></i>
+                    <input type="number" id="clothes-count" placeholder="Enter quantity of clothes" min="1" required>
+                  </div>
+                </div>
+
+                <!-- Live Cost Preview -->
+                <div class="cost-preview-card">
+                  <span>Rate per item:</span>
+                  <span id="laundry-rate-preview">₹0</span>
+                  <hr>
+                  <span class="total-label">Estimated Bill:</span>
+                  <span class="total-val" id="laundry-total-preview">₹0</span>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block">
+                  <i data-lucide="check-circle-2"></i>
+                  <span>Register Laundry Bill</span>
+                </button>
+              </form>
+            </div>
+
+            <!-- Right Side: Laundry Logs & Rates -->
+            <div class="table-container glass-panel">
+              <div class="panel-header">
+                <i data-lucide="list-todo"></i>
+                <h3>Active Laundry Ledger</h3>
+              </div>
+              <div class="table-wrapper">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Room</th>
+                      <th>Guest Name</th>
+                      <th>Service Type</th>
+                      <th>Clothes</th>
+                      <th>Total Cost</th>
+                      <th>Date Logged</th>
+                    </tr>
+                  </thead>
+                  <tbody id="laundry-list-tbody">
+                    <!-- Javascript will populate laundry rows -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Tab 5: Billing & Checkout -->
+        <section id="billing" class="tab-panel">
+          <div class="billing-container-layout">
+            <!-- Selector and Quick Overview Pane -->
+            <div class="checkout-selector-pane glass-panel">
+              <div class="panel-header">
+                <i data-lucide="door-closed"></i>
+                <h3>Select Checked-In Guest</h3>
+              </div>
+              <p class="section-description">Select a checked-in guest room to view their live ledger, itemized expenses, and generate their final checkout receipt.</p>
+              
+              <div class="checkout-selector-group">
+                <div class="input-wrapper large">
+                  <i data-lucide="key-round"></i>
+                  <select id="checkout-guest-select">
+                    <option value="">-- Select Room for Checkout --</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="quick-totals-grid" id="checkout-quick-totals" style="display: none;">
+                <div class="quick-total-box purple-border">
+                  <span class="box-title">Room Rent</span>
+                  <span class="box-val" id="checkout-quick-rent">₹0</span>
+                </div>
+                <div class="quick-total-box orange-border">
+                  <span class="box-title">Dining Bill</span>
+                  <span class="box-val" id="checkout-quick-dining">₹0</span>
+                </div>
+                <div class="quick-total-box blue-border">
+                  <span class="box-title">Laundry Bill</span>
+                  <span class="box-val" id="checkout-quick-laundry">₹0</span>
+                </div>
+              </div>
+
+              <div class="checkout-actions-block" id="checkout-actions" style="display: none;">
+                <button id="complete-checkout-btn" class="btn btn-primary btn-block large-btn">
+                  <i data-lucide="door-closed"></i>
+                  <span>Confirm Checkout & Reset Room</span>
+                </button>
+                <button id="print-invoice-btn" class="btn btn-secondary btn-block">
+                  <i data-lucide="printer"></i>
+                  <span>Print Final Invoice</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Receipt Card Pane -->
+            <div class="receipt-pane glass-panel">
+              <!-- Invoice Empty State -->
+              <div class="invoice-empty-state" id="invoice-empty">
+                <i data-lucide="receipt" class="invoice-empty-icon"></i>
+                <h3>No Room Selected</h3>
+                <p>Select a guest room from the sidebar to review the live checkout receipt.</p>
+              </div>
+
+              <!-- Real Invoice UI -->
+              <div class="invoice-wrapper" id="invoice-bill" style="display: none;">
+                <!-- Invoice Header -->
+                <div class="invoice-header">
+                  <div class="invoice-brand">
+                    <h2>AETHERIA</h2>
+                    <p>Luxury Resort & Spa</p>
+                  </div>
+                  <div class="invoice-meta">
+                    <h3>INVOICE</h3>
+                    <p class="inv-num">INV-<span id="invoice-id">XXXXXXXX</span></p>
+                    <p class="inv-date">Date: <span id="invoice-date">--/--/----</span></p>
+                  </div>
+                </div>
+
+                <hr class="invoice-divider">
+
+                <!-- Guest & Stay details -->
+                <div class="invoice-details-grid">
+                  <div>
+                    <h4>Billed To:</h4>
+                    <p class="detail-name" id="invoice-guest-name">Guest Name</p>
+                    <p class="detail-sub" id="invoice-guest-address">Guest Address</p>
+                  </div>
+                  <div class="text-right">
+                    <h4>Stay Info:</h4>
+                    <p><strong>Room Number:</strong> <span id="invoice-room-num">---</span></p>
+                    <p><strong>Room Type:</strong> <span id="invoice-room-type">---</span></p>
+                    <p><strong>Check In:</strong> <span id="invoice-checkin">--/--/----</span></p>
+                    <p><strong>Check Out:</strong> <span id="invoice-checkout">--/--/----</span></p>
+                    <p><strong>Nights Stayed:</strong> <span id="invoice-nights">0</span></p>
+                  </div>
+                </div>
+
+                <!-- Ledger Items Table -->
+                <div class="invoice-table-wrapper">
+                  <table class="invoice-table">
+                    <thead>
+                      <tr>
+                        <th>Service Description</th>
+                        <th class="text-center">Rate</th>
+                        <th class="text-center">Qty / Nights</th>
+                        <th class="text-right">Amount</th>
+                      </tr>
+                    </thead>
+                    <tbody id="invoice-items-tbody">
+                      <!-- Javascript will inject line items dynamically -->
+                    </tbody>
+                  </table>
+                </div>
+
+                <!-- Subtotals and calculations -->
+                <div class="invoice-summary">
+                  <div class="summary-row">
+                    <span>Subtotal:</span>
+                    <span id="invoice-subtotal">₹0</span>
+                  </div>
+                  <div class="summary-row">
+                    <span>CGST (9%):</span>
+                    <span id="invoice-cgst">₹0</span>
+                  </div>
+                  <div class="summary-row">
+                    <span>SGST (9%):</span>
+                    <span id="invoice-sgst">₹0</span>
+                  </div>
+                  <hr class="invoice-divider">
+                  <div class="summary-row grand-total">
+                    <span>Grand Total:</span>
+                    <span id="invoice-grand-total">₹0</span>
+                  </div>
+                </div>
+
+                <div class="invoice-footer">
+                  <p>Thank you for choosing Aetheria Luxury Resort & Spa!</p>
+                  <p class="footer-note">This is a system-generated invoice representing your final hotel bill.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+
+  </div>
+
+  <!-- Toast Notification System -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- App Entry Scripts -->
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
