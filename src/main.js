@@ -70,8 +70,12 @@ function setupNavigation() {
       if (e.key === 'Escape') closeMobileNav();
     });
 
+    let resizeTimeout;
     window.addEventListener('resize', () => {
-      if (window.innerWidth > 768) closeMobileNav();
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        if (window.innerWidth > 768) closeMobileNav();
+      }, 120);
     });
   }
 
