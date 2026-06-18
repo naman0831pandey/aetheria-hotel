@@ -49,6 +49,35 @@ document.addEventListener('DOMContentLoaded', () => {
 function setupNavigation() {
   const navItems = document.querySelectorAll('.nav-item');
   const panels   = document.querySelectorAll('.tab-panel');
+  const sidebar = document.getElementById('app-sidebar');
+  const navToggle = document.getElementById('mobile-nav-toggle');
+  const sidebarOverlay = document.getElementById('sidebar-overlay');
+
+  const closeMobileNav = () => {
+    document.body.classList.remove('sidebar-open');
+    if (navToggle) navToggle.setAttribute('aria-expanded', 'false');
+  };
+
+  if (navToggle && sidebar && sidebarOverlay) {
+    navToggle.addEventListener('click', () => {
+      const isOpen = document.body.classList.toggle('sidebar-open');
+      navToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+
+    sidebarOverlay.addEventListener('click', closeMobileNav);
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeMobileNav();
+    });
+
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        if (window.innerWidth > 768) closeMobileNav();
+      }, 120);
+    });
+  }
 
   navItems.forEach(item => {
     item.addEventListener('click', () => {
@@ -79,6 +108,7 @@ function setupNavigation() {
       state.activeTab = targetTab;
 
       if (targetTab === 'restaurant') renderMenuGrid('all');
+      if (window.innerWidth <= 768) closeMobileNav();
     });
   });
 }

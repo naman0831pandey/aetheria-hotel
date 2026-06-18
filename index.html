@@ -17,7 +17,7 @@
   <div class="app-container">
     
     <!-- Sidebar Navigation -->
-    <aside class="sidebar">
+    <aside class="sidebar" id="app-sidebar">
       <div class="brand">
         <div class="logo-icon">
           <i data-lucide="hotel" class="gradient-icon"></i>
@@ -58,11 +58,15 @@
         </button>
       </div>
     </aside>
+    <button class="sidebar-overlay" id="sidebar-overlay" type="button" aria-label="Close navigation menu"></button>
 
     <!-- Main Content Area -->
     <main class="main-content">
       <!-- Top Header -->
       <header class="top-header">
+        <button id="mobile-nav-toggle" class="mobile-nav-toggle" type="button" aria-label="Toggle navigation menu" aria-expanded="false">
+          <i data-lucide="panel-left-open"></i>
+        </button>
         <div class="header-title">
           <h2 id="page-title">Executive Dashboard</h2>
           <p id="page-subtitle">Welcome back. Here is the operational overview of your property today.</p>
